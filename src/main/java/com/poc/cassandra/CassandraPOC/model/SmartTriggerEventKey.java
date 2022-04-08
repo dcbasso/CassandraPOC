@@ -7,7 +7,7 @@ import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn;
 import java.io.Serializable;
 
 /**
- * @author Dante Basso <dantebasso@rezolve.com>
+ * @author Dante Basso <dantebasso@gmail.com>
  * @since 07-04-2022
  */
 

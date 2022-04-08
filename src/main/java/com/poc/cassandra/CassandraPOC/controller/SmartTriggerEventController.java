@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * @author Dante Basso <dantebasso@rezolve.com>
+ * @author Dante Basso <dantebasso@gmail.com>
  * @since 05-04-2022
  */
 @RestController

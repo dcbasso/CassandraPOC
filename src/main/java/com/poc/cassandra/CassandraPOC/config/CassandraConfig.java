@@ -3,7 +3,7 @@ package com.poc.cassandra.CassandraPOC.config;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * @author Dante Basso <dantebasso@rezolve.com>
+ * @author Dante Basso <dantebasso@gmail.com>
  * @since 07-04-2022
  */
 
