@@ -3,6 +3,7 @@
 
 ### CREATE TABLE
 
+```
 CREATE TABLE smartrigger_events (
     partner_id         INT,
     merchant_id        INT,
@@ -18,3 +19,4 @@ CREATE TABLE smartrigger_events (
     )
 )
 WITH CLUSTERING ORDER BY (event_timestamp ASC, device_id ASC);
+```
