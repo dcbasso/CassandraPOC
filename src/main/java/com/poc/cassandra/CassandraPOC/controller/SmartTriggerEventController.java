@@ -3,6 +3,7 @@ package com.poc.cassandra.CassandraPOC.controller;
 import com.poc.cassandra.CassandraPOC.model.SmartTriggerEvent;
 import com.poc.cassandra.CassandraPOC.model.SmartTriggerEventKey;
 import com.poc.cassandra.CassandraPOC.repo.SmartTriggerEventRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,14 +12,16 @@ import org.springframework.web.bind.annotation.*;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * @author Dante Basso <dantebasso@gmail.com>
  * @since 05-04-2022
  */
+
+@Slf4j
 @RestController
 @RequestMapping("/api/smt")
 public class SmartTriggerEventController {
@@ -32,6 +35,7 @@ public class SmartTriggerEventController {
             final SmartTriggerEvent saved = this.repository.insertWithTtl(smt, Duration.ofSeconds(60));
             return new ResponseEntity<>(saved, HttpStatus.CREATED);
         } catch (Exception e) {
+            log.error(e.getMessage());
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -42,23 +46,29 @@ public class SmartTriggerEventController {
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
-    @GetMapping("/{partnerId}/{merchantId}")
-    public ResponseEntity<SmartTriggerEvent> getAllById(@PathVariable("partnerId") final int partnerId, @PathVariable("merchantId") final int merchantId) {
-        final SmartTriggerEventKey key = new SmartTriggerEventKey();
-        key.setMerchantId(merchantId);
-        key.setPartnerId(partnerId);
-        final Optional<SmartTriggerEvent> optionalBook = repository.findById(key);
-        return optionalBook.map(smt -> new ResponseEntity<>(smt, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
+    @GetMapping("/{partnerId}/{merchantId}/{timestamp}/{deviceId}")
+    public ResponseEntity<SmartTriggerEvent> findOne(@PathVariable("partnerId") final int partnerId, @PathVariable("merchantId") final int merchantId, @PathVariable("timestamp") final Instant timestamp, @PathVariable("deviceId") final UUID deviceId) {
+        final SmartTriggerEventKey id = new SmartTriggerEventKey();
+        id.setMerchantId(merchantId);
+        id.setPartnerId(partnerId);
+        id.setEventTimestamp(timestamp);
+        id.setDeviceId(deviceId);
+        final Optional<SmartTriggerEvent> optional = repository.findById(id);
+        return optional.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping("after/{partnerId}/{merchantId}")
-    public ResponseEntity<List<SmartTriggerEvent>> getAfter(@PathVariable("partnerId") final int partnerId, @PathVariable("merchantId") final int merchantId) {
+    @GetMapping("/{partnerId}/{merchantId}")
+    public ResponseEntity<List<SmartTriggerEvent>> findAllDataByPartnerAndMerchant(@PathVariable("partnerId") final int partnerId, @PathVariable("merchantId") final int merchantId) {
         final SmartTriggerEventKey key = new SmartTriggerEventKey();
         key.setMerchantId(merchantId);
         key.setPartnerId(partnerId);
+        final List<SmartTriggerEvent> list = repository.findList(key.getPartnerId(), key.getMerchantId());
+        return ResponseEntity.ok(list);
+    }
 
-        final List<SmartTriggerEvent> list = repository.test(partnerId, merchantId, Instant.now().minus(4, ChronoUnit.HOURS));
-//        final List<SmartTriggerEvent> list = repository.findByIdPartnerIdAndIdMerchantIdAndEventTimestampAfter(partnerId, merchantId, Instant.now().minus(4, ChronoUnit.HOURS));
+    @GetMapping("afterDays/{partnerId}/{merchantId}/{days}")
+    public ResponseEntity<List<SmartTriggerEvent>> getAfter(@PathVariable("partnerId") final int partnerId, @PathVariable("merchantId") final int merchantId, @PathVariable("days") final int days) {
+        final List<SmartTriggerEvent> list = repository.findAfter(partnerId, merchantId, Instant.now().minus(days, ChronoUnit.DAYS));
         return ResponseEntity.ok(list);
     }
 
