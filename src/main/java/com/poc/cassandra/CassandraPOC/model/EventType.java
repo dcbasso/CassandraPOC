@@ -1,7 +1,7 @@
 package com.poc.cassandra.CassandraPOC.model;
 
 /**
- * @author Dante Basso <dantebasso@rezolve.com>
+ * @author Dante Basso <dantebasso@gmail.com>
  * @since 07-04-2022
  */
 public enum EventType {

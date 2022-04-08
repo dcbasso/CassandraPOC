@@ -15,9 +15,10 @@ import java.util.List;
 @Repository
 public interface SmartTriggerEventRepository extends ExtendedCassandraRepository<SmartTriggerEvent, SmartTriggerEventKey> {
 
-    List<SmartTriggerEvent> findByIdPartnerIdAndIdMerchantIdAndEventTimestampAfter(int partnerId, int merchantId, Instant after);
+    @Query("SELECT * FROM smartrigger_events WHERE partner_id = :partnerId AND merchant_id = :merchantId")
+    List<SmartTriggerEvent> findList(int partnerId, int merchantId) ;
 
     @Query("SELECT * FROM smartrigger_events WHERE partner_id = :partnerId AND merchant_id = :merchantId AND event_timestamp >= :after")
-    List<SmartTriggerEvent> test(int partnerId, int merchantId, Instant after) ;
+    List<SmartTriggerEvent> findAfter(int partnerId, int merchantId, Instant after) ;
 
 }

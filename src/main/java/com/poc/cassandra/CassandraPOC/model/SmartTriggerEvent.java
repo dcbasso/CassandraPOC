@@ -4,7 +4,6 @@ import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import org.springframework.data.cassandra.core.mapping.Table;
 
-import java.time.Instant;
 import java.util.UUID;
 
 /**
@@ -20,12 +19,6 @@ public class SmartTriggerEvent {
     @Column("engagement_id")
     private UUID engagementId;
 
-    @Column("device_id")
-    private UUID deviceId;
-
-    @Column("event_timestamp")
-    private Instant eventTimestamp;
-
     @Column("event_type")
     private EventType eventType;
 
@@ -38,14 +31,6 @@ public class SmartTriggerEvent {
 
     public void setId(SmartTriggerEventKey id) {
         this.id = id;
-    }
-
-    public Instant getEventTimestamp() {
-        return eventTimestamp;
-    }
-
-    public void setEventTimestamp(Instant eventTimestamp) {
-        this.eventTimestamp = eventTimestamp;
     }
 
     public EventType getEventType() {
@@ -72,11 +57,4 @@ public class SmartTriggerEvent {
         this.engagementId = engagementId;
     }
 
-    public UUID getDeviceId() {
-        return deviceId;
-    }
-
-    public void setDeviceId(UUID deviceId) {
-        this.deviceId = deviceId;
-    }
 }
